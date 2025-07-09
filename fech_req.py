@@ -1,5 +1,7 @@
+# fetch_messages.py (dynamic version)
 import socket
 import json
+import sys
 
 def fetch_messages(receiver_id):
     payload = {
@@ -22,4 +24,7 @@ def fetch_messages(receiver_id):
         print(f"Error: {e}")
 
 if __name__ == "__main__":
-    fetch_messages("vm2")
+    if len(sys.argv) != 2:
+        print("Usage: python fetch_messages.py <vm_id>")
+    else:
+        fetch_messages(sys.argv[1])
