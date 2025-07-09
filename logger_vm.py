@@ -5,7 +5,7 @@ import time
 from scheduler_core import LoggerVMScheduler, VMRequest, Machine
 from datetime import datetime
 
-HOST = '127.0.0.1'
+HOST = '0.0.0.0'  # Listen on all interfaces for real deployment
 PORT = 65432
 
 # Initialize scheduler with no machines initially
@@ -20,7 +20,7 @@ message_queues = {}  # receiver_id -> list of messages
 
 def handle_client_connection(conn, addr):
     with conn:
-        data = conn.recv(2048)
+        data = conn.recv(4096)
         if not data:
             return
         try:
@@ -86,7 +86,9 @@ def handle_client_connection(conn, addr):
                 conn.sendall(b"Unknown request type.\n")
 
         except Exception as e:
-            conn.sendall(f"Error: {str(e)}".encode())
+            error_msg = f"Error: {str(e)}"
+            print(f"[Logger VM] {error_msg}")
+            conn.sendall(error_msg.encode())
 
 def scheduler_loop():
     while True:
